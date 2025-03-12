@@ -1,0 +1,28 @@
+{
+  "private": true,
+  "name": "adder-example",
+  "description": "Example project for an adder webassembly component",
+  "author": "rioam2",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "test": "vitest",
+    "prettier": "prettier . --write",
+    "lint": "eslint .",
+    "clean": "rm -rf dist",
+    "clean:full": "npm run clean && rm -rf node_modules"
+  },
+  "dependencies": {
+    "react-dom": "^19.0.0",
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react-dom": "^19.0.4",
+    "@types/react": "^19.0.10",
+    "@vitejs/plugin-react": "^4.3.4",
+    "rollup-plugin-jco": "*",
+    "vite": "^5.2.10"
+  }
+}
