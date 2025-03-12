@@ -1,0 +1,17 @@
+{
+  "$schema": "https://typedoc-plugin-markdown.org/schema.json",
+  "entryPoints": ["src/index.ts"],
+  "cleanOutputDir": true,
+  "out": "docs",
+  "classPropertiesFormat": "table",
+  "expandParameters": true,
+  "parametersFormat": "table",
+  "propertyMembersFormat": "table",
+  "readme": "none",
+  "mergeReadme": false,
+  "typeDeclarationFormat": "table",
+  "propertiesFormat": "table",
+  "gitRevision": "main",
+  "formatWithPrettier": true,
+  "plugin": ["typedoc-plugin-markdown"]
+}

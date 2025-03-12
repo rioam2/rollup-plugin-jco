@@ -1,0 +1,47 @@
+{
+  "name": "rollup-plugin-jco",
+  "description": "Rollup plugin for generating bindings from WebAssembly System Interface (WASI) Components",
+  "keywords": [
+    "components",
+    "interface",
+    "jco",
+    "plugin",
+    "rollup-plugin",
+    "rollup",
+    "system",
+    "vite-plugin",
+    "wasi",
+    "webassembly"
+  ],
+  "author": "rioam2",
+  "license": "MIT",
+  "version": "0.1.0",
+  "homepage": "https://github.com/rioam2/rollup-plugin-jco",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rioam2/rollup-plugin-jco"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "test": "vitest",
+    "prettier": "prettier . --write",
+    "lint": "eslint .",
+    "clean": "rm -rf dist",
+    "clean:full": "npm run clean && rm -rf node_modules",
+    "generate:docs": "typedoc"
+  },
+  "dependencies": {
+    "@bytecodealliance/jco": "^1.10.2"
+  },
+  "devDependencies": {
+    "typedoc-plugin-markdown": "^4.4.2",
+    "typedoc": "^0.27.9"
+  }
+}

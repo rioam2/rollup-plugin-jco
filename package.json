@@ -1,0 +1,35 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "test": "turbo test",
+    "lint": "turbo lint",
+    "prettier": "turbo prettier",
+    "generate:docs": "turbo generate:docs",
+    "clean": "turbo clean && rm -rf .turbo",
+    "clean:full": "turbo clean:full && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "@types/eslint": "^9.6.1",
+    "@typescript-eslint/eslint-plugin": "^8.26.1",
+    "@typescript-eslint/parser": "^8.26.1",
+    "eslint": "^9.22.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "jiti": "^2.4.2",
+    "prettier": "^3.5.3",
+    "turbo": "^2.4.4",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.26.1",
+    "vite": "^6.2.1",
+    "vite-plugin-checker": "^0.9.0",
+    "vite-plugin-dts": "^4.5.3",
+    "vitest": "^3.0.8"
+  },
+  "packageManager": "npm@10.8.2",
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ]
+}
