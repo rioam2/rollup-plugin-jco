@@ -29,6 +29,8 @@ export default defineConfig({
         name: 'rollup-plugin-jco',
         globals: {
           fs: 'fs',
+          path: 'path',
+          crypto: 'crypto',
         },
       },
     },
@@ -37,6 +39,9 @@ export default defineConfig({
     checker({ typescript: true }),
     dts({ rollupTypes: true }),
     externalizeDeps({
+      deps: false,
+      devDeps: true,
+      peerDeps: true,
       nodeBuiltins: true,
     }),
   ],

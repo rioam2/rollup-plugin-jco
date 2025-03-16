@@ -37,7 +37,7 @@
     "clean:full": "npm run clean && rm -rf node_modules",
     "typedoc": "typedoc"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@bytecodealliance/jco": "^1.10.2"
   },
   "devDependencies": {
