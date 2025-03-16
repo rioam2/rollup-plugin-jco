@@ -12,6 +12,7 @@ export default tseslint.config(
       'node_modules/',
       'dist/',
       'test/',
+      'bindings/',
       '**/*.test.ts',
       'eslint.config.js',
     ],

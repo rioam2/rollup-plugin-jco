@@ -9,6 +9,10 @@ export default defineConfig({
       name: 'adder_component',
       inputFile: './bin/adder_component.wasm',
       outDir: './bindings',
+      transpileOpts: {
+        minify: true,
+        tlaCompat: true,
+      },
     }),
   ],
   server: {

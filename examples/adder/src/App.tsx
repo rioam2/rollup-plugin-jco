@@ -1,3 +1,5 @@
+import { AdderFromBindings } from './components/AdderFromBindings';
+
 export function App() {
-  return 'Hello World';
+  return <AdderFromBindings />;
 }

@@ -11,6 +11,7 @@ export default defineConfig({
   base: './',
   define: {
     'globalThis.globalVersion': `"${packageJson.version}"`,
+    'globalThis.globalPluginName': `"${packageJson.name}"`,
   },
   build: {
     sourcemap: true,

@@ -13,6 +13,7 @@ export default tseslint.config(
       'dist/',
       'test/',
       '**/*.test.ts',
+      '**/*.d.ts',
       'eslint.config.js',
     ],
   },
