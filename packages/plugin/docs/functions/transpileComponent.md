@@ -8,7 +8,7 @@
 
 > **transpileComponent**(`options`: [`TranspileComponentOptions`](../interfaces/TranspileComponentOptions.md)): `Plugin`
 
-Defined in: [packages/plugin/src/index.ts:52](https://github.com/rioam2/rollup-plugin-jco/blob/main/packages/plugin/src/index.ts#L52)
+Defined in: [packages/plugin/src/plugins/transpileComponent.ts:56](https://github.com/rioam2/rollup-plugin-jco/blob/main/packages/plugin/src/plugins/transpileComponent.ts#L56)
 
 Rollup plugin that transpiles a WebAssembly component to a set of JavaScript bindings.
 

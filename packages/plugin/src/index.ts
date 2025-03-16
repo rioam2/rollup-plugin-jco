@@ -1,1 +1,4 @@
-export { transpileComponent } from './plugins/transpileComponent';
+export {
+  transpileComponent,
+  type TranspileComponentOptions,
+} from './plugins/transpileComponent';
