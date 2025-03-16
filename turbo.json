@@ -28,8 +28,8 @@
     "clean:full": {
       "cache": false
     },
-    "generate:docs": {
-      "dependsOn": ["^generate:docs", "^build"],
+    "typedoc": {
+      "dependsOn": ["^typedoc", "^build"],
       "inputs": ["$TURBO_DEFAULT$"],
       "outputs": ["docs/**"]
     }

@@ -6,7 +6,7 @@
     "test": "turbo test",
     "lint": "turbo lint",
     "prettier": "turbo prettier",
-    "generate:docs": "turbo generate:docs",
+    "typedoc": "turbo typedoc",
     "clean": "turbo clean && rm -rf .turbo",
     "clean:full": "turbo clean:full && rm -rf node_modules"
   },

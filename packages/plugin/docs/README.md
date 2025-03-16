@@ -4,6 +4,10 @@
 
 # rollup-plugin-jco
 
-## Variables
+## Interfaces
 
-- [TEST](variables/TEST.md)
+- [TranspileComponentOptions](interfaces/TranspileComponentOptions.md)
+
+## Functions
+
+- [transpileComponent](functions/transpileComponent.md)

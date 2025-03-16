@@ -11,7 +11,7 @@
     "test": "vitest",
     "prettier": "prettier . --write",
     "lint": "eslint .",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist bindings",
     "clean:full": "npm run clean && rm -rf node_modules"
   },
   "dependencies": {
