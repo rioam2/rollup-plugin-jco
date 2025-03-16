@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "tsBuildInfoFile": "node_modules/.cache/tsconfig.vitest.tsbuildinfo",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "noEmit": false,
+    "types": ["vitest/globals"]
+  },
+  "include": ["test", "**/*.test.{ts,tsx}"],
+  "exclude": [],
+  "references": [
+    {
+      "path": "./tsconfig.json"
+    }
+  ]
+}

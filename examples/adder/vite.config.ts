@@ -1,10 +1,10 @@
 import react from '@vitejs/plugin-react';
-import { defineConfig, PluginOption } from 'vite';
+import { defineConfig } from 'vitest/config';
 import { transpileComponent } from 'rollup-plugin-jco';
 
 export default defineConfig({
   plugins: [
-    ...(react() as PluginOption[]),
+    ...react(),
     transpileComponent({
       name: 'adder_component',
       inputFile: './bin/adder_component.wasm',
@@ -12,6 +12,7 @@ export default defineConfig({
       transpileOpts: {
         minify: true,
         tlaCompat: true,
+        base64Cutoff: 9e9,
       },
     }),
   ],
@@ -20,5 +21,15 @@ export default defineConfig({
   },
   build: {
     outDir: './dist',
+  },
+  test: {
+    include: ['test/**/*.test.{ts,tsx}', '**/*.test.{ts,tsx}'],
+    environment: 'jsdom',
+    globals: true,
+    typecheck: {
+      enabled: true,
+      checker: 'tsc',
+      tsconfig: 'tsconfig.vitest.json',
+    },
   },
 });

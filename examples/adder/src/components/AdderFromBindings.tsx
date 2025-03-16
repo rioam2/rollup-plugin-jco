@@ -23,6 +23,7 @@ export const AdderFromBindings: React.FC = () => {
           <span>First Number: &emsp;</span>
           <input
             type="number"
+            data-testid="first-operand"
             value={first}
             style={{ width: '100px' }}
             onChange={(e) => setFirst(Number(e.target.value))}
@@ -32,14 +33,19 @@ export const AdderFromBindings: React.FC = () => {
           <span>Second Number: &emsp;</span>
           <input
             type="number"
+            data-testid="second-operand"
             value={second}
             style={{ width: '100px' }}
             onChange={(e) => setSecond(Number(e.target.value))}
           />
         </label>
-        <button type="submit">Add</button>
+        <button data-testid="submit" type="submit">
+          Add
+        </button>
       </form>
-      <p>Sum: {result ?? '???'}</p>
+      <p>
+        Sum: <span data-testid="result">{result ?? '???'}</span>
+      </p>
     </div>
   );
 };

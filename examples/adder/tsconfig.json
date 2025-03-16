@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "composite": true,
+    "tsBuildInfoFile": "node_modules/.cache/tsconfig.tsbuildinfo",
     "target": "ES2015",
     "lib": ["ES2022", "DOM", "DOM.Iterable", "ESNext.Array", "ESNext"],
     "module": "ES2022",
@@ -18,5 +20,11 @@
     "noFallthroughCasesInSwitch": true,
     "useUnknownInCatchVariables": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["test", "**/*.test.{ts,tsx}"],
+  "references": [
+    {
+      "path": "./tsconfig.vitest.json"
+    }
+  ]
 }
