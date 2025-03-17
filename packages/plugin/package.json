@@ -19,7 +19,7 @@
   "homepage": "https://github.com/rioam2/rollup-plugin-jco",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rioam2/rollup-plugin-jco"
+    "url": "git+https://github.com/rioam2/rollup-plugin-jco.git"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
