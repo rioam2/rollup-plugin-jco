@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/rioam2/rollup-plugin-jco/compare/rollup-plugin-jco/v1.0.0...rollup-plugin-jco/v1.0.1) (2025-03-17)
+
+
+### Bug Fixes
+
+* update tag matcher for publish workflow ([4358d6e](https://github.com/rioam2/rollup-plugin-jco/commit/4358d6eb6665989e25166fee102c83ef6e17fece))
+
 ## 1.0.0 (2025-03-16)
 
 
