@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/rioam2/rollup-plugin-jco/compare/rollup-plugin-jco/v1.0.1...rollup-plugin-jco/v1.0.2) (2025-03-17)
+
+
+### Bug Fixes
+
+* use release app for release-please ([db4d1f7](https://github.com/rioam2/rollup-plugin-jco/commit/db4d1f73f89cbcdcff2c0b62b45053de90e1dccb))
+
 ## [1.0.1](https://github.com/rioam2/rollup-plugin-jco/compare/rollup-plugin-jco/v1.0.0...rollup-plugin-jco/v1.0.1) (2025-03-17)
 
 
