@@ -1,6 +1,7 @@
 import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
+import { ControlledTranspileOptions } from './types/jco';
 
 /**
  * Reads a file from disk and returns its contents as a Uint8Array.
@@ -58,4 +59,33 @@ export async function writeCacheFile(
   const cacheFile = getCacheFile(outputDir, name);
   await fs.promises.mkdir(outputDir, { recursive: true });
   await fs.promises.writeFile(cacheFile, hash);
+}
+
+/**
+ * Transforms a search parameter value into a primitive Javascript literal
+ * @param value Search parameter value
+ * @returns parsed Javascript literal
+ */
+export function searchParamToPrimitive(value: string) {
+  if (value === '') return true;
+  if (value === 'true') return true;
+  if (value === 'false') return false;
+  if (!isNaN(+value)) return +value;
+  return value;
+}
+
+/**
+ * Parses JCO transpile options from an import URL
+ * @param url Url of a component import
+ * @returns Parsed transpile options from import URL
+ */
+export function extractTranspileOptionsFromUrl(url: URL) {
+  const searchParams = [...url.searchParams.entries()];
+  return searchParams.reduce(
+    (acc, [key, value]) => ({
+      ...acc,
+      [key]: searchParamToPrimitive(value),
+    }),
+    {} as ControlledTranspileOptions,
+  );
 }

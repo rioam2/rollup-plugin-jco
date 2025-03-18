@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
-import { transpileComponent } from 'rollup-plugin-jco';
+import { transpileComponent, wasiComponentModel } from 'rollup-plugin-jco';
 
 export default defineConfig({
   plugins: [
@@ -14,6 +14,11 @@ export default defineConfig({
         tlaCompat: true,
         base64Cutoff: 9e9,
       },
+    }),
+    wasiComponentModel({
+      minify: true,
+      tlaCompat: true,
+      base64Cutoff: 9e9,
     }),
   ],
   server: {
