@@ -1,10 +1,15 @@
 import { transpile } from '@bytecodealliance/jco';
-import fs from 'fs';
 import path from 'path';
 import type { Plugin } from 'rollup';
 import { ControlledTranspileOptions, TranspileOptions } from 'src/types/jco';
 import { PLUGIN_NAME, PLUGIN_VERSION } from '../constants';
-import { extractTranspileOptionsFromUrl, readFile } from '../util';
+import {
+  createCustomPackage,
+  decodeAsString,
+  extractTranspileOptionsFromUrl,
+  readCustomPackage,
+  readFile,
+} from '../util';
 
 // Log prefix for plugin
 const logPrefix = `[${PLUGIN_NAME}@${PLUGIN_VERSION}]`;
@@ -12,7 +17,7 @@ const logPrefix = `[${PLUGIN_NAME}@${PLUGIN_VERSION}]`;
 // Log messages for the plugin
 const logMessages = {
   transpileStart: (name: string) =>
-    `${logPrefix} Generating WebAssembly/WASI bindings for ${name}\n`,
+    `${logPrefix} Generating WebAssembly/WASI bindings for ${name}`,
 };
 
 /**
@@ -61,76 +66,46 @@ export function wasiComponentModel(
       };
 
       // Transpile WASI component to Javascript using JCO
-      const result = await transpile(inputBytes, transpileOptions);
-
-      // Extract transpiled Javascript bindings
-      const transpiledJs: Uint8Array | string | undefined =
-        result.files[`${fileBasename}.js`];
-
-      // Extract transpiled Typescript declarations
-      const transpiledDeclaration: Uint8Array | string | undefined =
-        result.files[`${fileBasename}.d.ts`];
-
-      if (!transpiledJs || !transpiledDeclaration) {
-        throw new Error(`${logPrefix} Unable to transpile ${fileBasename}`);
-      }
-
-      const transpiledJsCode =
-        typeof transpiledJs === 'string'
-          ? transpiledJs
-          : new TextDecoder().decode(transpiledJs);
-
-      const transpiledDeclarationCode =
-        typeof transpiledDeclaration === 'string'
-          ? transpiledDeclaration
-          : new TextDecoder().decode(transpiledDeclaration);
+      const { files } = await transpile(inputBytes, transpileOptions);
+      const transpiledJs = decodeAsString(files[`${fileBasename}.js`]);
+      const transpiledDecl = decodeAsString(files[`${fileBasename}.d.ts`]);
 
       // Construct an ambient module declaration for the component's Typescript bindings
       const outputDeclarationPrefix = `declare module "*${relativeFilePath}${importUrl.search}"`;
-      const outputDeclaration = `${outputDeclarationPrefix} { ${transpiledDeclarationCode
+      const outputDeclaration = `${outputDeclarationPrefix} { ${transpiledDecl
         .replaceAll(/^\S*\/\/.*$/gm, '')
         .replaceAll('\n', ' ')} }`;
 
-      const declarationOutputDirectory = path.resolve(
-        './node_modules/@types/rollup-plugin-jco-generated',
+      // Generate a custom npm package to store the component's Typescript bindings
+      // This package starts with the '@types' prefix to ensure it is automatically picked up by Typescript
+      const typesPackage = '@types/rollup-plugin-jco-generated';
+      const declarationFileName = 'components.gen.d.ts';
+      const existingTypesPackage = await readCustomPackage(typesPackage);
+
+      // Load any existing declarations for the package and merge with the newly generated declaration
+      const mergedDeclarations = new TextEncoder().encode(
+        [
+          ...new TextDecoder()
+            .decode(existingTypesPackage?.files[declarationFileName])
+            .split('\n')
+            .filter((line) => !!line)
+            .filter((line) => !line.startsWith(outputDeclarationPrefix)),
+          outputDeclaration,
+        ].join('\n'),
       );
 
-      const generatedDeclarationFile = path.join(
-        declarationOutputDirectory,
-        `components.gen.d.ts`,
-      );
-
-      await fs.promises.mkdir(declarationOutputDirectory, { recursive: true });
-      const existingDeclarations = fs.existsSync(generatedDeclarationFile)
-        ? await fs.promises.readFile(generatedDeclarationFile, 'utf-8')
-        : '';
-
-      const mergedDeclarations = [
-        ...existingDeclarations
-          .split('\n')
-          .filter((line) => !!line)
-          .filter((line) => !line.startsWith(outputDeclarationPrefix)),
-        outputDeclaration,
-      ].join('\n');
-
-      await fs.promises.writeFile(generatedDeclarationFile, mergedDeclarations);
-
-      const generatedPkgJson = {
-        name: '@types/rollup-plugin-jco-generated',
-        private: true,
-        types: path.relative(
-          declarationOutputDirectory,
-          generatedDeclarationFile,
-        ),
-      };
-
-      await fs.promises.writeFile(
-        path.join(declarationOutputDirectory, `package.json`),
-        JSON.stringify(generatedPkgJson, null, 2),
-      );
+      // Create or update the existing custom package with the new merged declarations
+      await createCustomPackage({
+        package: {
+          name: typesPackage,
+          private: true,
+          types: declarationFileName,
+        },
+        files: { [declarationFileName]: mergedDeclarations },
+      });
 
       console.log();
-      return transpiledJsCode;
+      return transpiledJs;
     },
   };
 }
