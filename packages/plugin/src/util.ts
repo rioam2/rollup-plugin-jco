@@ -99,6 +99,31 @@ export function decodeAsString(input: Uint8Array | string | undefined) {
   return typeof input === 'string' ? input : new TextDecoder().decode(input);
 }
 
+/**
+ * Creates an ambient declaration for a JS module
+ * @param moduleName Name of the JS module to generate an ambient declaration fro
+ * @param decl Contents of the ambient declaration
+ * @returns Ambient declaration for the provided JS module name
+ */
+export function createModuleDeclaration(moduleName: string, decl: string) {
+  return `declare module "*${moduleName}" { ${greedyMinify(decl)} }\n`;
+}
+
+/**
+ * Minifies a string by removing comments and newlines
+ * Not recommended for general use as it was created for a minimal use-case
+ * @param input Input string to minify
+ * @returns Minified string
+ */
+export function greedyMinify(input: string) {
+  const commentsRemoved = input.replace(
+    /\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm,
+    '',
+  );
+  const newlinesRemoved = commentsRemoved.replaceAll('\n', ' ');
+  return newlinesRemoved;
+}
+
 /** Type representing a custom npm package for use with `createCustomPackage` */
 interface CustomPackage {
   package: {
@@ -118,37 +143,62 @@ interface CustomPackage {
  * @param detail Details of the custom package to create
  * @returns Promise that resolves when the package is created
  */
-export async function createCustomPackage(detail: CustomPackage) {
+export function createCustomPackage(detail: CustomPackage) {
   const outDir = path.resolve('./node_modules', detail.package.name);
-  await fs.promises.mkdir(outDir, { recursive: true });
+  fs.mkdirSync(outDir, { recursive: true });
   for (const [name, content] of Object.entries(detail.files)) {
-    await fs.promises.writeFile(path.join(outDir, name), content);
+    fs.writeFileSync(path.join(outDir, name), content);
   }
-  await fs.promises.writeFile(
+  fs.writeFileSync(
     path.join(outDir, 'package.json'),
     JSON.stringify(detail.package, null, 2),
   );
 }
 
-export async function readCustomPackage(
-  name: string,
-): Promise<CustomPackage | undefined> {
+export function readCustomPackage(name: string): CustomPackage | undefined {
   const packageDir = path.resolve('./node_modules', name);
   const packageJsonPath = path.resolve(packageDir, 'package.json');
-  if (!fs.existsSync(packageJsonPath)) {
-    return undefined;
-  }
-  const packageJson = JSON.parse(
-    await fs.promises.readFile(packageJsonPath, 'utf-8'),
-  );
-  const files = await fs.promises.readdir(packageDir);
+  if (!fs.existsSync(packageJsonPath)) return undefined;
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+  const files = fs.readdirSync(packageDir);
   const fileContents = Object.fromEntries(
-    await Promise.all(
-      files.map(async (file) => {
-        const content = await fs.promises.readFile(path.join(packageDir, file));
-        return [file, content];
-      }),
-    ),
+    files.map((file) => {
+      const content = fs.readFileSync(path.join(packageDir, file));
+      return [file, content];
+    }),
   );
   return { package: packageJson, files: fileContents };
+}
+
+export function updateCustomPackageDeclaration(
+  packageName: string,
+  declarationFileName: string,
+  declaration: string,
+) {
+  const existingPackage = readCustomPackage(packageName);
+
+  // Prefix for generated declaration
+  const outputDeclarationPrefix = declaration.split('{')[0] ?? '';
+
+  // Load any existing declarations for the package and merge with the newly generated declaration
+  const mergedDeclarations = new TextEncoder().encode(
+    [
+      ...new TextDecoder()
+        .decode(existingPackage?.files[declarationFileName])
+        .split('\n')
+        .filter((line) => !!line)
+        .filter((line) => !line || !line.startsWith(outputDeclarationPrefix)),
+      declaration,
+    ].join('\n'),
+  );
+
+  // Create or update the existing custom package with the new merged declarations
+  createCustomPackage({
+    package: {
+      private: true,
+      name: packageName,
+      types: declarationFileName,
+    },
+    files: { [declarationFileName]: mergedDeclarations },
+  });
 }
