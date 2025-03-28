@@ -18,6 +18,8 @@ const logPrefix = `[${PLUGIN_NAME}@${PLUGIN_VERSION}]`;
 const logMessages = {
   transpileStart: (name: string) =>
     `${logPrefix} Generating WebAssembly/WASI bindings for ${name}`,
+  coreGenerationStart: (name: string, coreNum: string) =>
+    `${logPrefix} Generating core WebAssembly module for ${name}, core number ${coreNum}`,
   invalidCoreNumber: (url: URL) =>
     `${logPrefix} Invalid core number in import URL: ${url}`,
   errorGeneratingCore: (name: string, numCores: number, coreNames: string[]) =>
@@ -32,9 +34,13 @@ const logMessages = {
 export type WasiComponentModelOptions = ControlledTranspileOptions;
 
 /**
- * Rollup plugin that transpiles a WebAssembly component to a set of JavaScript bindings.
- * @param options Plugin options
- * @returns Rollup plugin
+ * Rollup plugin for transpiling WebAssembly components to JavaScript bindings using JCO.
+ * This plugin also supports transpiling WebAssembly components to their core WebAssembly modules.
+ * @see JCO-Documentation: https://bytecodealliance.github.io/jco/
+ * @param options Transpilation options for JCO
+ * @returns Rollup plugin for transpiling WebAssembly components
+ * @throws Error if the component cannot be transpiled
+ * @throws Error if the component is not a valid WebAssembly component
  */
 export function wasiComponentModel(
   options?: WasiComponentModelOptions,
@@ -73,6 +79,14 @@ export function wasiComponentModel(
   };
 }
 
+/**
+ * Transpiles a WebAssembly component to it's corresponding JavaScript bindings using JCO.
+ * @param importUrl URL of the component to transpile
+ * @param options Transpilation options for JCO
+ * @returns Transpiled JavaScript code
+ * @throws Error if the component cannot be transpiled
+ * @throws Error if the component is not a valid WebAssembly component
+ */
 async function transpileComponent(
   importUrl: URL,
   options?: WasiComponentModelOptions,
@@ -126,6 +140,14 @@ async function transpileComponent(
   return transpiledJs;
 }
 
+/**
+ * Transpiles a WebAssembly component into its core WebAssembly modules using JCO.
+ * @param importUrl URL of the component to transpile
+ * @param coreNum Core number to transpile
+ * @param options Transpilation options for JCO
+ * @returns Transpiled WebAssembly module
+ * @throws Error if the core number is invalid
+ */
 async function transpileWasmCores(
   importUrl: URL,
   coreNum: string,
@@ -136,6 +158,8 @@ async function transpileWasmCores(
   // Extract WASI component information from import URL
   const filePath = importUrl.pathname;
   const fileBasename = path.basename(filePath);
+
+  console.log(logMessages.coreGenerationStart(fileBasename, coreNum));
 
   // Prepare input and options for component transpilation
   const inputBytes = await readFile(filePath);
