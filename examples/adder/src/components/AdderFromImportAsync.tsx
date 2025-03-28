@@ -8,8 +8,15 @@ export const AdderFromImportAsync: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const cores = await import('../../bin/adder_component.wasm?cores');
-    const { addTwoIntegers } = await instantiate(cores.getCoreModule, {});
+    const getCoreModule = async (name: string) => {
+      if (name.endsWith('core.wasm')) {
+        const { compile } = await import(
+          '../../bin/adder_component.wasm?core=0'
+        );
+        return compile();
+      }
+    };
+    const { addTwoIntegers } = await instantiate(getCoreModule, {});
     const sum = addTwoIntegers(first, second);
     setResult(sum);
   };

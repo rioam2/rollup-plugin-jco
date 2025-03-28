@@ -18,6 +18,10 @@ const logPrefix = `[${PLUGIN_NAME}@${PLUGIN_VERSION}]`;
 const logMessages = {
   transpileStart: (name: string) =>
     `${logPrefix} Generating WebAssembly/WASI bindings for ${name}`,
+  invalidCoreNumber: (url: URL) =>
+    `${logPrefix} Invalid core number in import URL: ${url}`,
+  errorGeneratingCore: (name: string, numCores: number, coreNames: string[]) =>
+    `${logPrefix} Error generating core WebAssembly module for ${name}. There are only ${numCores} core(s) in the source component: \n\n${coreNames.join('\n')}\n`,
 };
 
 /**
@@ -47,7 +51,7 @@ export function wasiComponentModel(
         importUrl.pathname.endsWith('.wasm');
 
       const shouldTransformWasmCores =
-        importUrl.searchParams.has('cores') &&
+        importUrl.searchParams.has('core') &&
         importUrl.pathname.endsWith('.wasm');
 
       if (shouldTransformComponent) {
@@ -55,7 +59,13 @@ export function wasiComponentModel(
       }
 
       if (shouldTransformWasmCores) {
-        return transpileWasmCores(importUrl, options);
+        let coreNum = importUrl.searchParams.get('core');
+        if (coreNum === '0') coreNum = ''; // For convenience, allow writing `core=0` instead of `core=`
+        // Expect some core number to be present
+        if (coreNum === null) {
+          throw new Error(logMessages.invalidCoreNumber(importUrl));
+        }
+        return transpileWasmCores(importUrl, coreNum, options);
       }
 
       return null;
@@ -118,6 +128,7 @@ async function transpileComponent(
 
 async function transpileWasmCores(
   importUrl: URL,
+  coreNum: string,
   options?: WasiComponentModelOptions,
 ) {
   console.log();
@@ -138,14 +149,20 @@ async function transpileWasmCores(
 
   // Extract core WebAssembly modules from the WASI component
   const { files } = await transpile(inputBytes, transpileOptions);
-  const cores = Object.fromEntries(
-    Object.entries(files)
-      .filter(([key]) => key.endsWith('.wasm'))
-      .map(([key, value]) => [key, [...value]]),
-  );
+  const coreBaseName = `${fileBasename}.core${coreNum}.wasm`;
+  const core = files[coreBaseName];
+
+  if (!core) {
+    const cores = Object.keys(files).filter((file) =>
+      file.startsWith(`${fileBasename}.core`),
+    );
+    throw new Error(
+      logMessages.errorGeneratingCore(coreBaseName, cores.length, cores),
+    );
+  }
 
   const moduleName = `${fileBasename}${importUrl.search}`;
-  const moduleDeclaration = `export function getCoreModule(name: string): WebAssembly.Module;`;
+  const moduleDeclaration = `export const compile: () => Promise<WebAssembly.Module>;`;
   const outputDeclaration = createModuleDeclaration(
     moduleName,
     moduleDeclaration,
@@ -162,12 +179,9 @@ async function transpileWasmCores(
     outputDeclaration,
   );
 
-  // Return a Javascript module that exports the core WebAssembly modules
+  // Return an instantiated WebAssembly module for the requested core
   return `
-    /** Core WebAssembly module factory */
-    export function getCoreModule(name) {
-      const cores = ${JSON.stringify(cores)};
-      return WebAssembly.compile(new Uint8Array(cores[name]));
-    }
+    const core = ${JSON.stringify([...core])};
+    export const compile = async () => WebAssembly.compile(new Uint8Array(core));
   `;
 }
