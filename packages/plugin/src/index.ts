@@ -3,7 +3,4 @@ export {
   type TranspileComponentOptions,
 } from './plugins/transpileComponent';
 
-export {
-  wasiComponentModel,
-  type WasiComponentModelOptions,
-} from './plugins/wasiComponentModel';
+export { wasi, type WasiOptions } from './plugins/wasi';

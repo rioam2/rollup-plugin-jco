@@ -27,11 +27,11 @@ const logMessages = {
 };
 
 /**
- * Options for the `wasiComponentModel` rollup plugin.
+ * Options for the `wasi` rollup plugin.
  * @interface
  * @expand
  */
-export type WasiComponentModelOptions = ControlledTranspileOptions;
+export type WasiOptions = ControlledTranspileOptions;
 
 /**
  * Rollup plugin for transpiling WebAssembly components to JavaScript bindings using JCO.
@@ -42,9 +42,7 @@ export type WasiComponentModelOptions = ControlledTranspileOptions;
  * @throws Error if the component cannot be transpiled
  * @throws Error if the component is not a valid WebAssembly component
  */
-export function wasiComponentModel(
-  options?: WasiComponentModelOptions,
-): Plugin {
+export function wasi(options?: WasiOptions): Plugin {
   return {
     name: PLUGIN_NAME,
     version: PLUGIN_VERSION,
@@ -87,10 +85,7 @@ export function wasiComponentModel(
  * @throws Error if the component cannot be transpiled
  * @throws Error if the component is not a valid WebAssembly component
  */
-async function transpileComponent(
-  importUrl: URL,
-  options?: WasiComponentModelOptions,
-) {
+async function transpileComponent(importUrl: URL, options?: WasiOptions) {
   console.log();
 
   // Extract WASI component information from import URL
@@ -151,7 +146,7 @@ async function transpileComponent(
 async function transpileWasmCores(
   importUrl: URL,
   coreNum: string,
-  options?: WasiComponentModelOptions,
+  options?: WasiOptions,
 ) {
   console.log();
 
@@ -159,7 +154,7 @@ async function transpileWasmCores(
   const filePath = importUrl.pathname;
   const fileBasename = path.basename(filePath);
 
-  console.log(logMessages.coreGenerationStart(fileBasename, coreNum));
+  console.log(logMessages.coreGenerationStart(fileBasename, coreNum || '0'));
 
   // Prepare input and options for component transpilation
   const inputBytes = await readFile(filePath);
