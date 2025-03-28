@@ -26,6 +26,13 @@ const logMessages = {
     `${logPrefix} Error generating core WebAssembly module for ${name}. There are only ${numCores} core(s) in the source component: \n\n${coreNames.join('\n')}\n`,
 };
 
+/** Default options for the `wasi` rollup plugin. */
+const DEFAULT_OPTIONS: ControlledTranspileOptions = {
+  minify: true,
+  tlaCompat: true,
+  base64Cutoff: 9e9,
+};
+
 /**
  * Options for the `wasi` rollup plugin.
  * @interface
@@ -99,6 +106,7 @@ async function transpileComponent(importUrl: URL, options?: WasiOptions) {
   const inputBytes = await readFile(filePath);
   const transpileOptions: TranspileOptions = {
     name: fileBasename,
+    ...DEFAULT_OPTIONS,
     ...options,
     ...extractTranspileOptionsFromUrl(importUrl),
   };
@@ -160,6 +168,7 @@ async function transpileWasmCores(
   const inputBytes = await readFile(filePath);
   const transpileOptions: TranspileOptions = {
     name: fileBasename,
+    ...DEFAULT_OPTIONS,
     ...options,
     ...extractTranspileOptionsFromUrl(importUrl),
     // Required to transpile wasm cores
