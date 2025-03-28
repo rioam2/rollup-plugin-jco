@@ -1,13 +1,21 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { AdderFromBindings } from './AdderFromBindings';
 import { $init } from '../../bindings/adder_component';
+import { AdderFromImport } from './AdderFromImport';
+import { AdderFromImportAsync } from './AdderFromImportAsync';
 
-describe('AdderFromBindings Component', async () => {
+const ADDER_COMPONENTS = [
+  ['AdderFromBindings', AdderFromBindings],
+  ['AdderFromImport', AdderFromImport],
+  ['AdderFromImportAsync', AdderFromImportAsync],
+];
+
+describe.for(ADDER_COMPONENTS)('%s Component', async ([, Component]) => {
   await $init;
 
-  it('adds two positive numbers accurately', () => {
-    render(<AdderFromBindings />);
+  it('adds two positive numbers accurately', async () => {
+    render(<Component />);
 
     const firstInput = screen.getByTestId('first-operand');
     const secondInput = screen.getByTestId('second-operand');
@@ -18,11 +26,11 @@ describe('AdderFromBindings Component', async () => {
     fireEvent.click(submitButton);
 
     const result = screen.getByTestId('result');
-    expect(result.textContent).toBe('12');
+    await waitFor(() => expect(result.textContent).toBe('12'));
   });
 
-  it('adds a number with zero correctly', () => {
-    render(<AdderFromBindings />);
+  it('adds a number with zero correctly', async () => {
+    render(<Component />);
 
     const firstInput = screen.getByTestId('first-operand');
     const secondInput = screen.getByTestId('second-operand');
@@ -33,11 +41,11 @@ describe('AdderFromBindings Component', async () => {
     fireEvent.click(submitButton);
 
     const result = screen.getByTestId('result');
-    expect(result.textContent).toBe('10');
+    await waitFor(() => expect(result.textContent).toBe('10'));
   });
 
-  it('adds two negative numbers correctly', () => {
-    render(<AdderFromBindings />);
+  it('adds two negative numbers correctly', async () => {
+    render(<Component />);
 
     const firstInput = screen.getByTestId('first-operand');
     const secondInput = screen.getByTestId('second-operand');
@@ -48,6 +56,6 @@ describe('AdderFromBindings Component', async () => {
     fireEvent.click(submitButton);
 
     const result = screen.getByTestId('result');
-    expect(result.textContent).toBe('-10');
+    await waitFor(() => expect(result.textContent).toBe('-10'));
   });
 });
