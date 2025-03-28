@@ -1,60 +1,55 @@
 import React from 'react';
-import { instantiate } from '../../bin/adder_component.wasm?component&instantiation=async';
+import { AdderUI } from './AdderUI';
+
+/**
+ * This function is used to load the core module of the adder WASM component.
+ * This is only required for lazy loading a WASM component using async instantiation.
+ * If the WebAssembly component is comprised of multiple modules, this function
+ * should return the core module of each according to name.
+ * @param name The name of the core module to load.
+ * @returns The compiled core module of the adder WASM component.
+ */
+const getCoreModule = async (name: string) => {
+  switch (name) {
+    case 'adder_component.wasm.core.wasm':
+      const core = await import('../../bin/adder_component.wasm?core=0');
+      return core.compile();
+    // Add more cases here if your WASM component has multiple core modules.
+    default:
+      throw new Error('Unexpected module name');
+  }
+};
+
+/**
+ * This function is used to initialize the adder component using async instantiation.
+ * It lazily loads the adder component and returns an instance of the adder API.
+ */
+const instantiateAdderComponent = async () => {
+  const { instantiate } = await import(
+    '../../bin/adder_component.wasm?component&instantiation=async'
+  );
+  return instantiate(getCoreModule, {});
+};
 
 export const AdderFromImportAsync: React.FC = () => {
-  const [first, setFirst] = React.useState<number>(0);
-  const [second, setSecond] = React.useState<number>(0);
-  const [result, setResult] = React.useState<number | null>(null);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const getCoreModule = async (name: string) => {
-      if (name.endsWith('core.wasm')) {
-        const { compile } = await import(
-          '../../bin/adder_component.wasm?core=0'
-        );
-        return compile();
-      }
-    };
-    const { addTwoIntegers } = await instantiate(getCoreModule, {});
-    const sum = addTwoIntegers(first, second);
-    setResult(sum);
-  };
-
   return (
-    <div style={{ border: '1px solid black', padding: '0 1rem' }}>
-      <h1>Integer Adder using Import (Async Instantiation)</h1>
-      <form
-        style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
-        onSubmit={handleSubmit}
-      >
-        <label>
-          <span>First Number: &emsp;</span>
-          <input
-            type="number"
-            data-testid="first-operand"
-            value={first}
-            style={{ width: '100px' }}
-            onChange={(e) => setFirst(Number(e.target.value))}
-          />
-        </label>
-        <label>
-          <span>Second Number: &emsp;</span>
-          <input
-            type="number"
-            data-testid="second-operand"
-            value={second}
-            style={{ width: '100px' }}
-            onChange={(e) => setSecond(Number(e.target.value))}
-          />
-        </label>
-        <button data-testid="submit" type="submit">
-          Add
-        </button>
-      </form>
-      <p>
-        Sum: <span data-testid="result">{result ?? '???'}</span>
-      </p>
-    </div>
+    <AdderUI
+      title="Integer Adder using Import (Async Instantiation)"
+      handleSubmit={async (a, b, setResult) => {
+        // Ideally this instantiation should be done once and cached.
+        // This is just for demonstration purposes.
+        const { addTwoIntegers } = await instantiateAdderComponent();
+        const sum = addTwoIntegers(a, b);
+        setResult(sum);
+      }}
+    >
+      This example demonstrates how to use the adder component by importing from
+      the WebAssembly component directly using a Rollup/Vite plugin to transpile
+      the component into Javascript during build-time. Typescript types are
+      automatically generated and provide type safety against the imported API.
+      This example uses async instantiation to lazily load the adder component.
+      This improves the initial load time of the application by only loading the
+      adder component when it is needed.
+    </AdderUI>
   );
 };
