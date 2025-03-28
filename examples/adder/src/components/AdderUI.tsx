@@ -19,7 +19,9 @@ export const AdderUI: React.FC<AdderUIProps> = ({
   const [result, setResult] = React.useState<number | null>(null);
 
   return (
-    <div style={{ border: '1px solid black', padding: '0 1rem' }}>
+    <div
+      style={{ border: '1px solid black', padding: '0 1rem', flex: '1 0 0' }}
+    >
       <h1>{title}</h1>
       <p>{children}</p>
       <form
@@ -54,7 +56,9 @@ export const AdderUI: React.FC<AdderUIProps> = ({
         </button>
       </form>
       <p>
-        Sum: <span data-testid="result">{result ?? '???'}</span>
+        <strong>
+          Sum: <span data-testid="result">{result ?? '???'}</span>
+        </strong>
       </p>
     </div>
   );
