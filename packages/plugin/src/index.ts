@@ -1,6 +1,6 @@
+export { type ControlledTranspileOptions } from './types/jco';
+export { wasi } from './plugins/wasi';
 export {
   transpileComponent,
   type TranspileComponentOptions,
 } from './plugins/transpileComponent';
-
-export { wasi, type WasiOptions } from './plugins/wasi';

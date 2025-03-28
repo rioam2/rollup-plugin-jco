@@ -6,8 +6,8 @@
 
 ## Interfaces
 
+- [ControlledTranspileOptions](interfaces/ControlledTranspileOptions.md)
 - [TranspileComponentOptions](interfaces/TranspileComponentOptions.md)
-- [WasiOptions](interfaces/WasiOptions.md)
 
 ## Functions
 

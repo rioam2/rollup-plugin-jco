@@ -34,13 +34,6 @@ const DEFAULT_OPTIONS: ControlledTranspileOptions = {
 };
 
 /**
- * Options for the `wasi` rollup plugin.
- * @interface
- * @expand
- */
-export type WasiOptions = ControlledTranspileOptions;
-
-/**
  * Rollup plugin for transpiling WebAssembly components to JavaScript bindings using JCO.
  * This plugin also supports transpiling WebAssembly components to their core WebAssembly modules.
  * @see JCO-Documentation: https://bytecodealliance.github.io/jco/
@@ -49,7 +42,7 @@ export type WasiOptions = ControlledTranspileOptions;
  * @throws Error if the component cannot be transpiled
  * @throws Error if the component is not a valid WebAssembly component
  */
-export function wasi(options?: WasiOptions): Plugin {
+export function wasi(options?: ControlledTranspileOptions): Plugin {
   return {
     name: PLUGIN_NAME,
     version: PLUGIN_VERSION,
@@ -92,7 +85,10 @@ export function wasi(options?: WasiOptions): Plugin {
  * @throws Error if the component cannot be transpiled
  * @throws Error if the component is not a valid WebAssembly component
  */
-async function transpileComponent(importUrl: URL, options?: WasiOptions) {
+async function transpileComponent(
+  importUrl: URL,
+  options?: ControlledTranspileOptions,
+) {
   console.log();
 
   // Extract WASI component information from import URL
@@ -154,7 +150,7 @@ async function transpileComponent(importUrl: URL, options?: WasiOptions) {
 async function transpileWasmCores(
   importUrl: URL,
   coreNum: string,
-  options?: WasiOptions,
+  options?: ControlledTranspileOptions,
 ) {
   console.log();
 

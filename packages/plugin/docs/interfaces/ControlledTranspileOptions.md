@@ -2,15 +2,13 @@
 
 ---
 
-[rollup-plugin-jco](../README.md) / WasiOptions
+[rollup-plugin-jco](../README.md) / ControlledTranspileOptions
 
-# Interface: WasiOptions
+# Interface: ControlledTranspileOptions
 
-Defined in: [packages/plugin/src/plugins/wasi.ts:41](https://github.com/rioam2/rollup-plugin-jco/blob/main/packages/plugin/src/plugins/wasi.ts#L41)
+Defined in: [packages/plugin/src/types/jco.ts:10](https://github.com/rioam2/rollup-plugin-jco/blob/main/packages/plugin/src/types/jco.ts#L10)
 
-**`Expand`**
-
-Options for the `wasi` rollup plugin.
+JCO transpile options without options for changing name or outDir
 
 ## Properties
 

@@ -6,18 +6,18 @@
 
 # Function: wasi()
 
-> **wasi**(`options`?: `ControlledTranspileOptions`): `Plugin`
+> **wasi**(`options`?: [`ControlledTranspileOptions`](../interfaces/ControlledTranspileOptions.md)): `Plugin`
 
-Defined in: [packages/plugin/src/plugins/wasi.ts:52](https://github.com/rioam2/rollup-plugin-jco/blob/main/packages/plugin/src/plugins/wasi.ts#L52)
+Defined in: [packages/plugin/src/plugins/wasi.ts:45](https://github.com/rioam2/rollup-plugin-jco/blob/main/packages/plugin/src/plugins/wasi.ts#L45)
 
 Rollup plugin for transpiling WebAssembly components to JavaScript bindings using JCO.
 This plugin also supports transpiling WebAssembly components to their core WebAssembly modules.
 
 ## Parameters
 
-| Parameter  | Type                         | Description                   |
-| ---------- | ---------------------------- | ----------------------------- |
-| `options`? | `ControlledTranspileOptions` | Transpilation options for JCO |
+| Parameter  | Type                                                                        | Description                   |
+| ---------- | --------------------------------------------------------------------------- | ----------------------------- |
+| `options`? | [`ControlledTranspileOptions`](../interfaces/ControlledTranspileOptions.md) | Transpilation options for JCO |
 
 ## Returns
 
