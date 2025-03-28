@@ -9,6 +9,7 @@ import {
   readFile,
   writeCacheFile,
 } from '../util';
+import { ControlledTranspileOptions } from 'src/types/jco';
 
 // Log prefix for plugin
 const logPrefix = `[${PLUGIN_NAME}@${PLUGIN_VERSION}][transpileComponent]`;
@@ -42,10 +43,7 @@ export interface TranspileComponentOptions {
    * @interface
    * @expand
    */
-  transpileOpts?: Omit<
-    NonNullable<Parameters<typeof transpile>[1]>,
-    'name' | 'outDir'
-  >;
+  transpileOpts?: ControlledTranspileOptions;
 }
 
 /**
