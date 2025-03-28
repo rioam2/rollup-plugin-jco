@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/rioam2/rollup-plugin-jco/compare/rollup-plugin-jco/v1.0.3...rollup-plugin-jco/v1.1.0) (2025-03-28)
+
+
+### Features
+
+* add plugin for automatic transformation of wasi components ([#5](https://github.com/rioam2/rollup-plugin-jco/issues/5)) ([a3fc9fe](https://github.com/rioam2/rollup-plugin-jco/commit/a3fc9fe6faaa1a4a1d99aa1d9a0dbaf5ab56c4a4))
+
 ## [1.0.3](https://github.com/rioam2/rollup-plugin-jco/compare/rollup-plugin-jco/v1.0.2...rollup-plugin-jco/v1.0.3) (2025-03-17)
 
 
